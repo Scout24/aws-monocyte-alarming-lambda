@@ -1,0 +1,7 @@
+region: eu-west-1
+stacks:
+  monocyte-alarming:
+    template-url: templates/aws-monocyte-alarming.yaml
+    parameters:
+      zipFile: latest/aws-monocyte-alarming-lambda.zip
+      bucketName: aws-monocyte-alarming-lambda
