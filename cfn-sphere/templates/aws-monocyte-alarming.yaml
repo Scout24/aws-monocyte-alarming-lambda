@@ -16,6 +16,13 @@ Parameters:
     Type: String
     Default: latest/aws-monocyte-alarming-lambda.zip
 Resources:
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      AccessControl:
+        Private
+      BucketName:
+        Ref: bucketName
   monocyteUpdateRole:
     Type: AWS::IAM::Role
     Properties:
