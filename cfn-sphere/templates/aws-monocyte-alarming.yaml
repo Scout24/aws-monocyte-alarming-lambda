@@ -1,14 +1,8 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Description: Monocyte Alarming Lambda
-Outputs:
-  lambdaFunctionName:
-    Description: Name of the Monocyte Alarming Lambda function, to be used in separate API call to allow
-      subscription to input SNS topic.
-    Value:
-      Ref: monocyteAlarmingFunction
 Parameters:
   bucketName:
-    Default: aws-monocyte-alarming
+    Default: aws-monocyte-alarming-infrastructur
     Description: aws-monocyte-alarming distrubtion bucket that contains the Lambda function zip file
     Type: String
   zipFile:
@@ -16,13 +10,6 @@ Parameters:
     Type: String
     Default: latest/aws-monocyte-alarming-lambda.zip
 Resources:
-  S3Bucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      AccessControl:
-        Private
-      BucketName:
-        Ref: bucketName
   monocyteUpdateRole:
     Type: AWS::IAM::Role
     Properties:
