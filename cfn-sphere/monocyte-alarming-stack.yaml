@@ -3,5 +3,5 @@ stacks:
   monocyte-alarming:
     template-url: templates/aws-monocyte-alarming.yaml
     parameters:
-      zipFile: v0.5/aws-monocyte-alarming-lambda.zip
+      zipFile: v0.6/aws-monocyte-alarming-lambda.zip
       bucketName: aws-monocyte-alarming-lambda-infrastructur
