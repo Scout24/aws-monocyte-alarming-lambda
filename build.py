@@ -1,4 +1,5 @@
 from pybuilder.core import use_plugin, init, Author
+import os
 from pybuilder.vcs import VCSRevision
 
 use_plugin("python.core")
@@ -21,8 +22,25 @@ authors = [Author("Enrico Heine", "enrico.heine@immobilienscout24.de"),
            Author("Thomas Lehmann", "thomas.lehmann@immobilienscout24.de")]
 url = "https://github.com/ImmobilienScout24/aws-monocyte-alarming-lambda"
 license = "Apache License 2.0"
-default_task = ["clean", "analyze", "package_lambda_code", "upload_zip_to_s3"]
+default_task = ["clean", "analyze", "package_lambda_code"]
 
+@init(environments='upload')
+def set_properties_for_teamcity_builds(project):
+    project.set_property('teamcity_output', True)
+    project.set_property('teamcity_parameter', 'crassus_filename')
+
+    # project.version = '%s-%s' % (project.version,
+    #                              os.environ.get('BUILD_NUMBER', 0))
+    project.default_task = [
+        'upload_zip_to_s3',
+        'upload_cfn_to_s3',
+    ]
+    project.set_property('install_dependencies_index_url',
+                         os.environ.get('PYPIPROXY_URL'))
+
+    project.set_property('template_files', [
+        ('cfn-sphere/templates', 'aws-monocyte-alarming.yaml'),
+    ])
 
 @init
 def set_properties(project):
@@ -33,6 +51,4 @@ def set_properties(project):
     project.build_depends_on("unittest2")
     project.set_property("bucket_name", "aws-monocyte-alarming-lambda-infrastructur")
     project.set_property("lambda_file_access_control", "private")
-
-
 
