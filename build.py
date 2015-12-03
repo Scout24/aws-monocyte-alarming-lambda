@@ -1,6 +1,5 @@
 from pybuilder.core import use_plugin, init, Author
 import os
-from pybuilder.vcs import VCSRevision
 
 use_plugin("python.core")
 use_plugin("python.unittest")
@@ -10,9 +9,8 @@ use_plugin("python.coverage")
 use_plugin("python.distutils")
 use_plugin("pypi:pybuilder_aws_plugin")
 
-
 name = "aws-monocyte-alarming-lambda"
-version = "0.6"
+version = "0.7"
 summary = "aws-monocyte-alarming-lambda - Check SQS messages from monocyte for all ultimiate source of accounts (usofa) and send SES Emails via AWS Lambda"
 description = """ 
     Check SQS messages from monocyte for all ultimiate source of accounts and send SES Emails via AWS Lambda.
@@ -45,10 +43,10 @@ def set_properties_for_teamcity_builds(project):
 @init
 def set_properties(project):
     project.set_property("verbose", True)
-
+    project.depends_on("pils")
     project.depends_on("boto3")
     project.build_depends_on("moto")
     project.build_depends_on("unittest2")
-    project.set_property("bucket_name", "aws-monocyte-alarming-lambda-infrastructur")
+    project.set_property("bucket_name", os.environ.get('BUCKET_NAME_FOR_UPLOAD'))
     project.set_property("lambda_file_access_control", "private")
 

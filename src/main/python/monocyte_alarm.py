@@ -3,22 +3,21 @@ import datetime
 import boto3
 import json
 
-USOFA_KEY = 'accounts.json'
-REGION_NAME = 'eu-west-1'
-USOFA_BUCKET = 'is24-accounts'
-
 
 class MonocyteAlarm(object):
 
-    def __init__(self, sqs_queue, sender_email, recipients, dry_run=True):
+    def __init__(self, sqs_queue, sender_email, recipients, usofa_key, usofa_bucket, region_name, dry_run=True):
         self.sqs_queue = sqs_queue
         self.sender_email = sender_email
         self.recipients = recipients
         self.dry_run = dry_run
+        self.usofa_key = usofa_key
+        self.usofa_bucket = usofa_bucket
+        self.region_name = region_name
 
     def __call__(self):
         reported_accounts = self.get_accounts_from_sqs()
-        accounts = self.get_usofa_data(USOFA_BUCKET)
+        accounts = self.get_usofa_data()
         usofa_aliases = {aliases for aliases in accounts.iterkeys()}
         # in usofa but not in sqs queue
         usofa_accounts = usofa_aliases.difference(reported_accounts)
@@ -28,7 +27,7 @@ class MonocyteAlarm(object):
         self._send_email(self.sender_email, self.recipients, body)
 
     def get_accounts_from_sqs(self):
-        sqs = boto3.resource('sqs', REGION_NAME)
+        sqs = boto3.resource('sqs', self.region_name)
         queue = sqs.get_queue_by_name(QueueName=self.sqs_queue)
         yesterday = datetime.datetime.now() - datetime.timedelta(days=1)
         reported_accounts = set()
@@ -65,8 +64,8 @@ Account in AWS account list (Usofa) but monocyte didn't run in this account:'''
                      'Body': {'Text': {'Data': body, 'Charset': 'utf-8'}}},
             Destination={'ToAddresses': recipients})
 
-    def get_usofa_data(self, usofa_bucket_name):
-        s3_connection = boto3.resource('s3', REGION_NAME)
-        key = s3_connection.Object(usofa_bucket_name, USOFA_KEY)
+    def get_usofa_data(self):
+        s3_connection = boto3.resource('s3', self.region_name)
+        key = s3_connection.Object(self.usofa_bucket, self.usofa_key)
         account_data = json.loads(key.get()['Body'].read().decode('utf-8'))
         return account_data

@@ -5,3 +5,4 @@ stacks:
     parameters:
       zipFile: v0.6/aws-monocyte-alarming-lambda.zip
       bucketName: aws-monocyte-alarming-lambda-infrastructur
+      config: '{"sqs_queue":["monocyte"],"sender_email":["produktion@immobilienscout24.de"], "recipients":["thomas.lehmann@immobilienscout24.de"], "dry_run":["True"], "usofa_key":["accounts.json"], "region_name":["eu-west-1"], "USOFA_BUCKET":["is24-accounts"]}'

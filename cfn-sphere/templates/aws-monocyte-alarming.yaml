@@ -2,13 +2,15 @@ AWSTemplateFormatVersion: '2010-09-09'
 Description: Monocyte Alarming Lambda
 Parameters:
   bucketName:
-    Default: aws-monocyte-alarming-infrastructur
     Description: aws-monocyte-alarming distrubtion bucket that contains the Lambda function zip file
     Type: String
   zipFile:
     Description: Name of the monocyte alarming distribution zip file inside the bucket
     Type: String
-    Default: latest/aws-monocyte-alarming-lambda.zip
+  config:
+    Description: Config of the Monocyte Alarming
+    Type: String
+    Default: '{"sqs_queue":["queueName"],"sender_email":["sender-mail@domain.invalid"], "recipients":["recipients_mail@domain.invalid"], "dry_run":["True"], "USOFA_KEY":["usofa s3 key file"], "REGION_NAME":["aws region string"], "USOFA_BUCKET":["usofa s3 bucket name"]}'
 Resources:
   monocyteUpdateRole:
     Type: AWS::IAM::Role
@@ -39,7 +41,8 @@ Resources:
           Ref: bucketName
         S3Key:
           Ref: zipFile
-      Description: lambda handler
+      Description:
+          Ref: config
       Handler: alarming_lambda.handler
       Role:
         Fn::GetAtt:

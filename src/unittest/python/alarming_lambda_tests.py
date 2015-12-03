@@ -14,7 +14,13 @@ class AlarmingLambdaTests(unittest2.TestCase):
         self.usofa_accounts = [ "usofa-my-account", "usofa-my-account2" ]
         self.sender = "test@test.invalid"
         self.queue_name = 'monocyte'
-        self.monocyte_alarm = monocyte_alarm.MonocyteAlarm(self.queue_name, self.sender, [self.sender])
+        self.test_usofa_key = "usofa-key.json"
+        self.test_usofa_bucket = "usofa-s3-bucket"
+        self.test_region_name = "eu-west-1"
+        self.dry_run = "true"
+        self.monocyte_alarm = monocyte_alarm.MonocyteAlarm(self.queue_name, self.sender, [self.sender],
+                                                           self.test_usofa_key, self.test_usofa_bucket,
+                                                           self.test_region_name, self.dry_run)
         self.email_body = '''Dear AWS User,
 
 our Monocyte Alarming identified some suspicious account behaviour during the last 24 hours.
@@ -33,11 +39,12 @@ Best,
 
     @moto.mock_s3
     def test_get_usofa_data(self):
-        s3_connection = boto3.client('s3', monocyte_alarm.REGION_NAME)
-        s3_connection.create_bucket(Bucket=monocyte_alarm.USOFA_BUCKET)
-        s3_connection.put_object(Bucket=monocyte_alarm.USOFA_BUCKET, Key=monocyte_alarm.USOFA_KEY,
+        s3_connection = boto3.client('s3', self.test_region_name)
+        s3_connection.create_bucket(Bucket=self.test_usofa_bucket)
+        s3_connection.put_object(Bucket=self.test_usofa_bucket, Key=self.test_usofa_key,
                                  Body=self.usofa_s3_data)
-        s3_return_value = self.monocyte_alarm.get_usofa_data(monocyte_alarm.USOFA_BUCKET)
+        s3_return_value = self.monocyte_alarm.get_usofa_data(self.test_usofa_bucket, self.test_region_name,
+                                                             self.test_usofa_key)
         s3_input_value = json.loads(self.usofa_s3_data)
         self.assertEqual(s3_return_value, s3_input_value)
 
@@ -108,9 +115,9 @@ Best,
             message_body = '{"status": "no issues", "account": "%s"}' % account_name
             sqs.send_message(QueueUrl=qurl['QueueUrl'],
                              MessageBody=message_body)
-        s3_connection = boto3.client('s3', monocyte_alarm.REGION_NAME)
-        s3_connection.create_bucket(Bucket=monocyte_alarm.USOFA_BUCKET)
-        s3_connection.put_object(Bucket=monocyte_alarm.USOFA_BUCKET, Key=monocyte_alarm.USOFA_KEY,
+        s3_connection = boto3.client('s3', self.test_region_name)
+        s3_connection.create_bucket(Bucket=self.test_usofa_bucket)
+        s3_connection.put_object(Bucket=self.test_usofa_bucket, Key=self.test_usofa_key,
                                  Body=self.usofa_s3_data)
         conn = boto3.client('ses')
         conn.verify_email_identity(EmailAddress=self.sender)
