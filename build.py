@@ -10,7 +10,7 @@ use_plugin("python.distutils")
 use_plugin("pypi:pybuilder_aws_plugin")
 
 name = "aws-monocyte-alarming-lambda"
-version = "0.8"
+version = "0.9"
 summary = "aws-monocyte-alarming-lambda - Check SQS messages from monocyte for all ultimiate source of accounts (usofa) and send SES Emails via AWS Lambda"
 description = """ 
     Check SQS messages from monocyte for all ultimiate source of accounts and send SES Emails via AWS Lambda.
@@ -22,20 +22,13 @@ url = "https://github.com/ImmobilienScout24/aws-monocyte-alarming-lambda"
 license = "Apache License 2.0"
 default_task = ["clean", "analyze", "package_lambda_code"]
 
-@init(environments='upload')
+@init(environments='teamcity')
 def set_properties_for_teamcity_builds(project):
     project.set_property('teamcity_output', True)
     project.set_property('teamcity_parameter', 'crassus_filename')
-    project.set_property('lambda_file_access_control', 'public-read')
-    project.set_property('template_file_access_control',
-                        os.environ.get('LAMBDA_FILE_ACCESS_CONTROL'))
-
-    # project.version = '%s-%s' % (project.version,
-    #                              os.environ.get('BUILD_NUMBER', 0))
-    project.default_task = [
-        'upload_zip_to_s3',
-        'upload_cfn_to_s3',
-    ]
+    project.set_property('lambda_file_access_control', 'LAMBDA_FILE_ACCESS_CONTROL')
+    project.set_property('template_file_access_control', os.environ.get('LAMBDA_FILE_ACCESS_CONTROL'))
+    project.set_property("bucket_name", os.environ.get('BUCKET_NAME_FOR_UPLOAD'))
     project.set_property('install_dependencies_index_url',
                          os.environ.get('PYPIPROXY_URL'))
 
@@ -50,6 +43,5 @@ def set_properties(project):
     project.depends_on("pils")
     project.build_depends_on("moto")
     project.build_depends_on("unittest2")
-    project.set_property("bucket_name", os.environ.get('BUCKET_NAME_FOR_UPLOAD'))
-    project.set_property("lambda_file_access_control", "private")
+
 
