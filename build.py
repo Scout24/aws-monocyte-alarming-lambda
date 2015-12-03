@@ -49,6 +49,7 @@ def set_properties(project):
     project.depends_on("boto3")
     project.depends_on("simplejson")
     project.build_depends_on("moto")
+    project.build_depends_on("mock")
     project.build_depends_on("unittest2")
     project.set_property("bucket_name", os.environ.get('BUCKET_NAME_FOR_UPLOAD'))
     project.set_property("lambda_file_access_control", "private")
