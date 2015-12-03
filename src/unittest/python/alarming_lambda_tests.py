@@ -43,8 +43,7 @@ Best,
         s3_connection.create_bucket(Bucket=self.test_usofa_bucket)
         s3_connection.put_object(Bucket=self.test_usofa_bucket, Key=self.test_usofa_key,
                                  Body=self.usofa_s3_data)
-        s3_return_value = self.monocyte_alarm.get_usofa_data(self.test_usofa_bucket, self.test_region_name,
-                                                             self.test_usofa_key)
+        s3_return_value = self.monocyte_alarm.get_usofa_data()
         s3_input_value = json.loads(self.usofa_s3_data)
         self.assertEqual(s3_return_value, s3_input_value)
 
