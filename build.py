@@ -26,6 +26,7 @@ default_task = ["clean", "analyze", "package_lambda_code"]
 def set_properties_for_teamcity_builds(project):
     project.set_property('teamcity_output', True)
     project.set_property('teamcity_parameter', 'crassus_filename')
+    project.set_property('lambda_file_access_control', 'public-read')
 
     # project.version = '%s-%s' % (project.version,
     #                              os.environ.get('BUILD_NUMBER', 0))
