@@ -47,8 +47,8 @@ def set_properties_for_teamcity_builds(project):
 def set_properties(project):
     project.set_property("verbose", True)
     project.depends_on("boto3")
+    project.depends_on("pils")
     project.build_depends_on("moto")
-    project.build_depends_on("mock")
     project.build_depends_on("unittest2")
     project.set_property("bucket_name", os.environ.get('BUCKET_NAME_FOR_UPLOAD'))
     project.set_property("lambda_file_access_control", "private")

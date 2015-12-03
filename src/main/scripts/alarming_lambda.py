@@ -1,5 +1,5 @@
 from monocyte_alarm import MonocyteAlarm
-from pils_aws import get_lambda_config_property
+from pils.aws import get_lambda_config_property
 
 
 def handler(event, context):
