@@ -1,7 +1,7 @@
 from __future__ import print_function, absolute_import, division
 from unittest import TestCase
 from mock import patch
-import simplejson as json
+import json
 from pils_aws import get_lambda_config_property
 
 

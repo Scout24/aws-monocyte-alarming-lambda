@@ -47,7 +47,6 @@ def set_properties_for_teamcity_builds(project):
 def set_properties(project):
     project.set_property("verbose", True)
     project.depends_on("boto3")
-    project.depends_on("simplejson")
     project.build_depends_on("moto")
     project.build_depends_on("mock")
     project.build_depends_on("unittest2")
