@@ -17,10 +17,9 @@ class AlarmingLambdaTests(unittest2.TestCase):
         self.test_usofa_key = "usofa-key.json"
         self.test_usofa_bucket = "usofa-s3-bucket"
         self.test_region_name = "eu-west-1"
-        self.dry_run = "true"
         self.monocyte_alarm = monocyte_alarm.MonocyteAlarm(self.queue_name, self.sender, [self.sender],
                                                            self.test_usofa_key, self.test_usofa_bucket,
-                                                           self.test_region_name, self.dry_run)
+                                                           self.test_region_name)
         self.email_body = '''Dear AWS User,
 
 our Monocyte Alarming identified some suspicious account behaviour during the last 24 hours.
@@ -53,7 +52,7 @@ Best,
 
     @moto.mock_ses
     def test_send_email(self):
-        conn = boto3.client('ses')
+        conn = boto3.client('ses', self.test_region_name)
         conn.verify_email_identity(EmailAddress=self.sender)
 
         self.monocyte_alarm._send_email(self.sender, [self.sender], 'test')
@@ -64,7 +63,7 @@ Best,
 
     @moto.mock_sqs
     def test_get_accounts_from_sqs(self):
-        sqs = boto3.client('sqs')
+        sqs = boto3.client('sqs', self.test_region_name)
         qurl = sqs.create_queue(QueueName=self.queue_name)
         for account_name in self.sqs_accounts:
             message_body = '{"status": "no issues", "account": "%s"}' % account_name
@@ -76,7 +75,7 @@ Best,
 
     @moto.mock_sqs
     def test_get_accounts_from_sqs_no_msg(self):
-        sqs = boto3.client('sqs')
+        sqs = boto3.client('sqs', self.test_region_name)
         sqs.create_queue(QueueName=self.queue_name)
 
         reported_accounts = self.monocyte_alarm.get_accounts_from_sqs()
@@ -84,7 +83,7 @@ Best,
 
     @moto.mock_sqs
     def test_get_accounts_from_sqs_not_in_usofa(self):
-        sqs = boto3.client('sqs')
+        sqs = boto3.client('sqs', self.test_region_name)
         qurl = sqs.create_queue(QueueName=self.queue_name)
         for account_name in self.sqs_accounts:
             message_body = '{"status": "no issues", "account": "test_%s"}' % account_name
@@ -96,7 +95,7 @@ Best,
 
     @moto.mock_sqs
     def test_get_accounts_from_sqs_not_in_sqs_but_in_usofa(self):
-        sqs = boto3.client('sqs')
+        sqs = boto3.client('sqs', self.test_region_name)
         qurl = sqs.create_queue(QueueName=self.queue_name)
         message_body = '{"status": "no issues", "account": "%s"}' % self.sqs_accounts[0]
         sqs.send_message(QueueUrl=qurl['QueueUrl'], MessageBody=message_body)
@@ -107,8 +106,8 @@ Best,
     @moto.mock_sqs
     @moto.mock_s3
     @moto.mock_ses
-    def test_monocyte_alarm_dry_run(self):
-        sqs = boto3.client('sqs')
+    def test_monocyte_alarm_run(self):
+        sqs = boto3.client('sqs', self.test_region_name)
         qurl = sqs.create_queue(QueueName=self.queue_name)
         for account_name in self.sqs_accounts:
             message_body = '{"status": "no issues", "account": "%s"}' % account_name
@@ -118,7 +117,7 @@ Best,
         s3_connection.create_bucket(Bucket=self.test_usofa_bucket)
         s3_connection.put_object(Bucket=self.test_usofa_bucket, Key=self.test_usofa_key,
                                  Body=self.usofa_s3_data)
-        conn = boto3.client('ses')
+        conn = boto3.client('ses', self.test_region_name)
         conn.verify_email_identity(EmailAddress=self.sender)
 
         self.monocyte_alarm()

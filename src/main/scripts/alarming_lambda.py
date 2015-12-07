@@ -10,13 +10,11 @@ def handler(event, context):
     usofa_key = properties['usofa_key']
     usofa_bucket = properties['usofa_bucket']
     region_name = properties['region_name']
-    dry_run = properties['dry_run']
 
     monocyte_alarm = MonocyteAlarm(sqs_queue=sqs_queue,
                                    sender_email=sender_email,
                                    recipients=recipients,
                                    usofa_key=usofa_key,
                                    usofa_bucket=usofa_bucket,
-                                   region_name=region_name,
-                                   dry_run=dry_run)
+                                   region_name=region_name)
     monocyte_alarm()

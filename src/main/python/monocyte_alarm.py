@@ -6,11 +6,10 @@ import json
 
 class MonocyteAlarm(object):
 
-    def __init__(self, sqs_queue, sender_email, recipients, usofa_key, usofa_bucket, region_name, dry_run=True):
+    def __init__(self, sqs_queue, sender_email, recipients, usofa_key, usofa_bucket, region_name):
         self.sqs_queue = sqs_queue
         self.sender_email = sender_email
         self.recipients = recipients
-        self.dry_run = dry_run
         self.usofa_key = usofa_key
         self.usofa_bucket = usofa_bucket
         self.region_name = region_name
@@ -39,9 +38,6 @@ class MonocyteAlarm(object):
                 if sent_time >= yesterday:
                     encoded_body = json.loads(message.body)
                     reported_accounts.add(encoded_body['account'])
-                else:
-                    if not self.dry_run:
-                        message.delete()
             if not messages:
                 break
         return reported_accounts
@@ -57,7 +53,7 @@ Account in AWS account list (Usofa) but monocyte didn't run in this account:'''
         return body
 
     def _send_email(self, sender_email, recipients, body):
-        conn = boto3.client('ses')
+        conn = boto3.client('ses', self.region_name)
         conn.send_email(
             Source=sender_email,
             Message={'Subject': {'Data': 'Monocyte Alarming', 'Charset': 'utf-8'},
