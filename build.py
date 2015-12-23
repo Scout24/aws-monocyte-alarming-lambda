@@ -13,7 +13,7 @@ name = "aws-monocyte-alarming-lambda"
 version = "0.12"
 summary = "aws-monocyte-alarming-lambda - Check SQS messages from monocyte for all ultimiate source of accounts (usofa) and send SES Emails via AWS Lambda"
 description = """ 
-    Check SQS messages from monocyte for all ultimiate source of accounts and send SES Emails via AWS Lambda.
+    Check SQS messages from monocyte for all ultimate source of accounts and send SES Emails via AWS Lambda.
     """
 authors = [Author("Enrico Heine", "enrico.heine@immobilienscout24.de"),
            Author("Michael Kuehne", "michael.kuehne_external@immobilienscout24.de"),
