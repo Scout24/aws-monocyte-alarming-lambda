@@ -1,17 +1,21 @@
 from __future__ import print_function, division, absolute_import
+
 import datetime
 import boto3
 import json
 
+from pils import dict_is_subset
+
 
 class MonocyteAlarm(object):
 
-    def __init__(self, sqs_queue, sender_email, recipients, usofa_key, usofa_bucket, region_name):
+    def __init__(self, sqs_queue, sender_email, recipients, usofa_key, usofa_bucket, usofa_filter, region_name):
         self.sqs_queue = sqs_queue
         self.sender_email = sender_email
         self.recipients = recipients
         self.usofa_key = usofa_key
         self.usofa_bucket = usofa_bucket
+        self.usofa_filter = usofa_filter
         self.region_name = region_name
 
     def __call__(self):
@@ -64,4 +68,6 @@ Account in AWS account list (Usofa) but monocyte didn't run in this account:'''
         s3_connection = boto3.resource('s3', self.region_name)
         key = s3_connection.Object(self.usofa_bucket, self.usofa_key)
         account_data = json.loads(key.get()['Body'].read().decode('utf-8'))
-        return account_data
+        filtered_data = {name: data for name, data in account_data.items()
+                         if dict_is_subset(self.usofa_filter, data)}
+        return filtered_data
