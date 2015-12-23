@@ -3,6 +3,6 @@ stacks:
   monocyte-alarming:
     template-url: templates/aws-monocyte-alarming.yaml
     parameters:
-      zipFile: v0.12/aws-monocyte-alarming-lambda.zip
+      zipFile: v0.13/aws-monocyte-alarming-lambda.zip
       bucketName: aws-monocyte-alarming-lambda-infrastructur
       config: '{"sqs_queue":"monocyte","sender_email":"produktion@immobilienscout24.de","recipients":["thomas.lehmann@immobilienscout24.de"],"usofa_key":"accounts.json","region_name":"eu-west-1","usofa_bucket":"is24-accounts"}'
