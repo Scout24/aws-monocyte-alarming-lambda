@@ -3,7 +3,7 @@ from aws_lambda_configurer import load_config
 
 
 def handler(event, context):
-    properties = load_config(context)
+    properties = load_config(Context=context)
     sqs_queue = properties['sqs_queue']
     sender_email = properties['sender_email']
     recipients = properties['recipients']
