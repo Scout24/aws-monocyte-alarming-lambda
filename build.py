@@ -10,7 +10,7 @@ use_plugin("python.distutils")
 use_plugin("pypi:pybuilder_aws_plugin")
 
 name = "aws-monocyte-alarming-lambda"
-version = "0.14"
+version = "0.15"
 summary = "aws-monocyte-alarming-lambda - Check SQS messages from monocyte for all ultimiate source of accounts (usofa) and send SES Emails via AWS Lambda"
 description = """ 
     Check SQS messages from monocyte for all ultimate source of accounts and send SES Emails via AWS Lambda.
