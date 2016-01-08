@@ -1,9 +1,9 @@
 from monocyte_alarm import MonocyteAlarm
-from pils.aws import get_lambda_config_property
+from aws_lambda_configurer import load_config
 
 
 def handler(event, context):
-    properties = get_lambda_config_property(context)
+    properties = load_config(context)
     sqs_queue = properties['sqs_queue']
     sender_email = properties['sender_email']
     recipients = properties['recipients']
