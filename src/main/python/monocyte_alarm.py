@@ -26,7 +26,6 @@ class MonocyteAlarm(object):
         usofa_accounts = usofa_aliases.difference(reported_accounts)
         # in sqs but not in usofa
         sqs_accounts = reported_accounts.difference(usofa_aliases)
-
         if sqs_accounts or usofa_accounts:
             body = self._email_body(usofa_accounts, sqs_accounts)
             self._send_email(self.sender_email, self.recipients, body)
