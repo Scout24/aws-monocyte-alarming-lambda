@@ -26,8 +26,9 @@ class MonocyteAlarm(object):
         usofa_accounts = usofa_aliases.difference(reported_accounts)
         # in sqs but not in usofa
         sqs_accounts = reported_accounts.difference(usofa_aliases)
-        body = self._email_body(usofa_accounts, sqs_accounts)
-        self._send_email(self.sender_email, self.recipients, body)
+        if sqs_accounts or usofa_aliases:
+            body = self._email_body(usofa_accounts, sqs_accounts)
+            self._send_email(self.sender_email, self.recipients, body)
 
     def get_accounts_from_sqs(self):
         sqs = boto3.resource('sqs', self.region_name)
@@ -48,11 +49,13 @@ class MonocyteAlarm(object):
 
     def _email_body(self, usofa_accounts, sqs_accounts):
         body = '''Dear AWS User,\n
-our Monocyte Alarming identified some suspicious account behaviour during the last 24 hours.\n
-Account in AWS account list (Usofa) but monocyte didn't run in this account:'''
-        body += '\n\t' + '\n\t'.join(usofa_accounts)
-        body += '\n\nAccounts not in AWS account list (Usofa) but monocyte ran successfully in this account:\n'
-        body += '\n\t' + '\n\t'.join(sqs_accounts)
+our Monocyte Alarming identified some suspicious account behaviour during the last 24 hours.'''
+        if usofa_accounts:
+            body += '''\n\nAccount in AWS account list (Usofa) but monocyte didn't run in this account:'''
+            body += '\n\t' + '\n\t'.join(usofa_accounts)
+        if sqs_accounts:
+            body += '\n\nAccounts not in AWS account list (Usofa) but monocyte ran successfully in this account:\n'
+            body += '\n\t' + '\n\t'.join(sqs_accounts)
         body += '\n\nBest,\n\tYour Compliance Team'
         return body
 
