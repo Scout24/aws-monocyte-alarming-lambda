@@ -1,5 +1,10 @@
-from pybuilder.core import use_plugin, init, Author
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
 import os
+
+from pybuilder.core import use_plugin, init, Author
+from pybuilder.vcs import VCSRevision
 
 use_plugin("python.core")
 use_plugin("python.unittest")
@@ -10,7 +15,7 @@ use_plugin("python.distutils")
 use_plugin("pypi:pybuilder_aws_plugin")
 
 name = "aws-monocyte-alarming-lambda"
-version = "0.18"
+version = VCSRevision().get_git_revision_count()
 summary = "aws-monocyte-alarming-lambda - Check SQS messages from monocyte for all ultimiate source of accounts (usofa) and send SES Emails via AWS Lambda"
 description = """ 
     Check SQS messages from monocyte for all ultimate source of accounts and send SES Emails via AWS Lambda.
