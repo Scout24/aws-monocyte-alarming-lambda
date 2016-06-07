@@ -27,7 +27,7 @@ Resources:
       - PolicyDocument:
           Statement:
           - Action:
-            - 'ses:ReceiveMessage'
+            - 'sqs:ReceiveMessage'
             - 'sqs:GetQueueUrl'
             Effect: Allow
             Resource:
