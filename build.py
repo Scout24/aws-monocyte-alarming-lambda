@@ -31,8 +31,8 @@ default_task = ["clean", "analyze", "package_lambda_code"]
 def set_properties_for_teamcity_builds(project):
     project.set_property('teamcity_output', True)
     project.set_property('teamcity_parameter', 'crassus_filename')
-    project.set_property('lambda_file_access_control', os.environ.get('LAMBDA_FILE_ACCESS_CONTROL'))
-    project.set_property('template_file_access_control', os.environ.get('LAMBDA_FILE_ACCESS_CONTROL'))
+    project.set_property('lambda_file_access_control', 'public-read')
+    project.set_property('template_file_access_control', 'public-read')
     project.set_property("bucket_name", os.environ.get('BUCKET_NAME_FOR_UPLOAD'))
     project.set_property('install_dependencies_index_url',
                          os.environ.get('PYPIPROXY_URL'))

@@ -3,6 +3,6 @@ stacks:
   monocyte-alarming:
     template-url: templates/aws-monocyte-alarming.yaml
     parameters:
-      zipFile: v0.13/aws-monocyte-alarming-lambda.zip
+      zipFile: latest/aws-monocyte-alarming-lambda.zip
       bucketName: aws-monocyte-alarming-lambda-infrastructur
       config: '{"_lookup" : { "s3": { "bucket": "aws-monocyte-alarming-lambda-configuration", "key": "aws-monocyte-alarming-lambda-configuration.json"}}}'

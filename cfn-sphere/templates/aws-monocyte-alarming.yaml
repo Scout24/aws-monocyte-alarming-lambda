@@ -27,12 +27,50 @@ Resources:
       - PolicyDocument:
           Statement:
           - Action:
-            - '*'
+            - 'ses:ReceiveMessage'
+            - 'sqs:GetQueueUrl'
             Effect: Allow
             Resource:
-            - '*'
+            - 'arn:aws:sqs:::*'
           Version: '2012-10-17'
-        PolicyName: monocyteUpdatePolicy
+        PolicyName: readQueue
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - 'ses:SendEmail'
+            Effect: Allow
+            Resource:
+            - 'arn:aws:ses:::*'
+          Version: '2012-10-17'
+        PolicyName: sendMail
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - 's3:GetObject'
+            Effect: Allow
+            Resource:
+            - 'arn:aws:s3:::*'
+          Version: '2012-10-17'
+        PolicyName: readS3
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - 'logs:Describe*'
+            - 'logs:CreateLogGroup'
+            - 'logs:CreateLogStream'
+            - 'logs:PutLogEvents'
+            Effect: Allow
+            Resource: '*'
+          Version: '2012-10-17'
+        PolicyName: cloudwatchLogsWriteAccess
+      - PolicyDocument:
+          Statement:
+          - Action:
+            - 'lambda:GetFunctionConfiguration'
+            Effect: Allow
+            Resource: '*'
+          Version: '2012-10-17'
+        PolicyName: GetFunctionConfiguration
   monocyteAlarmingFunction:
     Type: AWS::Lambda::Function
     Properties:
