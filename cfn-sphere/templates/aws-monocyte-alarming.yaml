@@ -15,6 +15,28 @@ Parameters:
     Description: Mail address to send alarms to when monocyte alarming function did not run for a day
     Type: String
 Resources:
+  TriggerAlarmingFunctionRule:
+    Type: "AWS::Events::Rule" 
+    Properties:
+      Description: "Event to trigger monocyte alarming function"
+      ScheduleExpression: "cron(1 6 ? * MON-FRI *)"
+      State: "ENABLED"
+      Targets:
+        - 
+          Id: "1"
+          Arn:
+            Fn::GetAtt:
+              - "monocyteAlarmingFunction"
+              - "Arn"
+
+  TriggerAlarmingFunctionRulePermission: 
+    Type: "AWS::Lambda::Permission"
+    Properties: 
+      FunctionName: '|GetAtt|monocyteAlarmingFunction|Arn'
+      Action: "lambda:InvokeFunction"
+      Principal: "events.amazonaws.com"
+      SourceArn: "|GetAtt|TriggerAlarmingFunctionRule|Arn"
+ 
   monocyteUpdateRole:
     Type: AWS::IAM::Role
     Properties:
