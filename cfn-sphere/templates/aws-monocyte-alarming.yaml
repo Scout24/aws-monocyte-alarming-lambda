@@ -127,13 +127,16 @@ Resources:
     Properties:
       AlarmActions:
       - Ref: notificationTopic
+      InsufficientDataActions:
+      - Ref: notificationTopic
       AlarmDescription: 'Monocyte alarming has not been running!'
       ComparisonOperator: LessThanThreshold
       EvaluationPeriods: 1
       MetricName: Invocations
       Namespace: AWS/Lambda
-      # one day in seconds
-      Period: 86400
+      # 1/4 day in seconds
+      # CloudWatch waits for 4 evaluation periods before setting the alarm to INSUFFICIENT_DATA
+      Period: 21600
       Statistic: Sum
       Threshold: 1
       Dimensions:
