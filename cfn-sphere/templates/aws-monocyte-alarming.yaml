@@ -157,13 +157,9 @@ Resources:
       EvaluationPeriods: 1
       MetricName: Errors
       Namespace: AWS/Lambda
-      # Period is three quarters of a day in seconds.
-      # CloudWatch waits for 4 evaluation periods before setting the alarm to INSUFFICIENT_DATA.
-      # Monocyte does not run on the weekend (nobody could react to the alarm, anyway), so it is
-      # normal for Monocyte to not have run for up to 3 days.
-      Period: 64800
+      Period: 60
       Statistic: Sum
-      Threshold: 1
+      Threshold: 0
       Dimensions:
       - Name: FunctionName
         Value: '|Ref|monocyteAlarmingFunction'
