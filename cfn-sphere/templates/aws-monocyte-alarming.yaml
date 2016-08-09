@@ -122,7 +122,7 @@ Resources:
       -
         Endpoint: '|Ref|alarmNotificationAddress'
         Protocol: email
-  noInvokationsAlarm:
+  noInvocationsAlarm:
     Type: AWS::CloudWatch::Alarm
     Properties:
       AlarmActions:
@@ -133,6 +133,29 @@ Resources:
       ComparisonOperator: LessThanThreshold
       EvaluationPeriods: 1
       MetricName: Invocations
+      Namespace: AWS/Lambda
+      # Period is three quarters of a day in seconds.
+      # CloudWatch waits for 4 evaluation periods before setting the alarm to INSUFFICIENT_DATA.
+      # Monocyte does not run on the weekend (nobody could react to the alarm, anyway), so it is
+      # normal for Monocyte to not have run for up to 3 days.
+      Period: 64800
+      Statistic: Sum
+      Threshold: 1
+      Dimensions:
+      - Name: FunctionName
+        Value: '|Ref|monocyteAlarmingFunction'
+  invocationErrorsAlarm:
+    Type: AWS::CloudWatch::Alarm
+    Properties:
+      AlarmActions:
+      - Ref: notificationTopic
+      AlarmDescription:
+        '|Join|':
+        - 'Monocyte alarming ran into errors, look up the logs in CloudWatch Logs at log group: /aws/lambda/'
+        - '|Ref|monocyteAlarmingFunction'
+      ComparisonOperator: GreaterThanThreshold
+      EvaluationPeriods: 1
+      MetricName: Errors
       Namespace: AWS/Lambda
       # Period is three quarters of a day in seconds.
       # CloudWatch waits for 4 evaluation periods before setting the alarm to INSUFFICIENT_DATA.
