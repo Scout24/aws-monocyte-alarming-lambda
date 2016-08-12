@@ -21,7 +21,7 @@ class MonocyteAlarm(object):
     def __call__(self):
         reported_accounts = self.get_accounts_from_sqs()
         accounts = self.get_usofa_data()
-        usofa_aliases = {aliases for aliases in accounts.iterkeys()}
+        usofa_aliases = {aliases for aliases in iter(accounts.keys())}
         # in usofa but not in sqs queue
         usofa_accounts = usofa_aliases.difference(reported_accounts)
         # in sqs but not in usofa
