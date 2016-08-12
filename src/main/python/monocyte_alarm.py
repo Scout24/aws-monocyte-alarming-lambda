@@ -1,11 +1,14 @@
 from __future__ import print_function, division, absolute_import
 
 import datetime
-import boto3
 import json
+import logging
 
+import boto3
 from pils import dict_is_subset
 
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
 
 class MonocyteAlarm(object):
 
@@ -29,6 +32,9 @@ class MonocyteAlarm(object):
         if sqs_accounts or usofa_accounts:
             body = self._email_body(usofa_accounts, sqs_accounts)
             self._send_email(self.sender_email, self.recipients, body)
+
+        logger.info("Accounts configured in usofa but monocyte did NOT run: %s" % usofa_accounts)
+        logger.info("Accounts NOT configured in usofa but monocyte did run: %s" % sqs_accounts)
 
     def get_accounts_from_sqs(self):
         sqs = boto3.resource('sqs', self.region_name)
