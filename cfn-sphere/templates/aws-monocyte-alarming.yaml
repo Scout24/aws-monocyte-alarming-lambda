@@ -131,7 +131,7 @@ Resources:
       - Ref: notificationTopic
       AlarmDescription: 'Monocyte alarming has not been running!'
       ComparisonOperator: LessThanThreshold
-      EvaluationPeriods: 1
+      EvaluationPeriods: 4
       MetricName: Invocations
       Namespace: AWS/Lambda
       # Period is three quarters of a day in seconds.
