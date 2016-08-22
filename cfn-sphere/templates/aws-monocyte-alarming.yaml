@@ -19,7 +19,7 @@ Resources:
     Type: "AWS::Events::Rule" 
     Properties:
       Description: "Event to trigger monocyte alarming function"
-      ScheduleExpression: "cron(1 6 ? * MON-FRI *)"
+      ScheduleExpression: "cron(1 6 ? * * *)"
       State: "ENABLED"
       Targets:
         - 
